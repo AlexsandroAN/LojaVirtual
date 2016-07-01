@@ -22,8 +22,13 @@
     <style name="Txt_Teste">
         <item name="android:color">@color/txt_padrao</item>
         <item name="android:textSize">@dimen/texto_padrao</item>
-        <item name="android:layout_marginBottom">@dimen/margin_widgets</item>
+        <item name="android:layout_marginBottom">@dimen/margin_widgets</item>        
+    </style>
 
+    <style name="Txt_Estilo">
+        <item name="android:color">@color/txt_padrao</item>
+        <item name="android:textSize">@dimen/texto_padrao</item>
+        <item name="android:layout_marginBottom">@dimen/margin_widgets</item>
     </style>
 
     <style name="Edt_Estilo">
@@ -38,7 +43,6 @@
         <item name="android:textStyle">bold</item>
         <item name="android:background">@color/bg_enviar</item>
     </style>
-    
 
    <style name="Style_Login">
         <item name="android:textColor">@color/txtBotao</item>
