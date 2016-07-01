@@ -1,4 +1,14 @@
 <resources>
     <string name="app_name">Loja Virtual</string>
     <string name="action_settings">Configurações</string>
+    <string name="title_activity_main">MainActivicty</string>
+    <string name="hello_world">Hello World!</string>
+    <string name="ola_alex">Olá Alex!</string>
+    <string name="btn_enviar">Enviar</string>
+    <string name="title_activity_login">LoginActivity</string>
+
+
+    <string name="lbl_login">Login</string>
+    <string name="lbl_senha">Senha</string>
+    <string name="btn_logar">Logar</string>
 </resources>

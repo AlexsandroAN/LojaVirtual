@@ -3,4 +3,10 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
+
+    <dimen name="padding_layout">20dip</dimen>
+    <dimen name="padding_toast">10dip</dimen>
+    <dimen name="margin_widgets">20dip</dimen>
+    <dimen name="texto_padrao">32sp</dimen>
+    <dimen name="texto_botao">25sp</dimen>
 </resources>
