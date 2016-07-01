@@ -31,9 +31,9 @@
 
         <EditText
             android:id="@+id/edtLogin"
-            style="@style/Edt_Estilo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:hint="@string/usuarioHint"
             android:inputType="text" />
 
         <TextView
@@ -44,17 +44,17 @@
 
         <EditText
             android:id="@+id/edtSenha"
-            style="@style/Edt_Estilo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:hint="@string/senhaHint"
             android:inputType="textPassword" />
 
         <Button
             android:id="@+id/btnLogar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/btn_logar" />
-
+            android:background="@color/btn_background"
+            android:text="@string/btn_enviar" />
 
     </LinearLayout>
 </ScrollView>

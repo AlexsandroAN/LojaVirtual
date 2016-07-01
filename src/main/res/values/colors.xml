@@ -13,5 +13,6 @@
     <color name="primary_info">#ecdd8a</color>
     <color name="primary_sucesso">#7BBDA9</color>
     <color name="primary_alerta">#837c7d</color>
+    <color name="btn_background">#00956B</color>
 
 </resources>
