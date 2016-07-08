@@ -16,11 +16,8 @@ public class LoginActivity extends AppCompatActivity {
 
     private EditText edtUsuario, edtSenha;
     private Button btnLogar;
-
     private SharedPreferences preferences;
-
     private LoginBO loginBO;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +26,7 @@ public class LoginActivity extends AppCompatActivity {
 
         loginBO = new LoginBO(this);
 
-        getSupportActionBar().hide();
+       // getSupportActionBar().hide();
 
         preferences = getSharedPreferences("pref",Context.MODE_PRIVATE);
         String usuario = preferences.getString("usuario", null);
@@ -42,10 +39,8 @@ public class LoginActivity extends AppCompatActivity {
             finish();
         }
 
-
         edtUsuario = (EditText) findViewById(R.id.edtUsuario);
         edtSenha = (EditText) findViewById(R.id.edtSenha);
-
         btnLogar = (Button) findViewById(R.id.btnLogar);
 
         btnLogar.setOnClickListener(new View.OnClickListener() {
@@ -72,9 +67,4 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
-
-
-
-
-
 }
