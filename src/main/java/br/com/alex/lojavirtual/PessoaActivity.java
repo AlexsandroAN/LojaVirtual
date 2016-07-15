@@ -18,23 +18,31 @@ import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 
 import br.com.alex.lojavirtual.Util.Mask;
+import br.com.alex.lojavirtual.entidade.Pessoa;
 import br.com.alex.lojavirtual.entidade.Profissao;
+import br.com.alex.lojavirtual.entidade.Sexo;
+import br.com.alex.lojavirtual.entidade.TipoPessoa;
 import br.com.alex.lojavirtual.fragment.DatePickerFragment;
+import br.com.alex.lojavirtual.repository.PessoaRepository;
 
 public class PessoaActivity extends AppCompatActivity {
 
     private Spinner spnProfissao;
     private TextView txtCpfCnpj;
-    private EditText edtCpfCnpj, edtNasc;
-    private RadioGroup rbgCpfCnpj;
+    private EditText edtNome, edtEndereco, edtCpfCnpj, edtNasc;
+    private RadioGroup rbgCpfCnpj, rbgSexo;
     private RadioButton rbtCpf;
-    private TextWatcher cpfMask;
-    private TextWatcher cnpjMask;
+    private TextWatcher cpfMask, cnpjMask;
     private int cpfCnpjSelecionado;
+
+    private PessoaRepository pessoaRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,15 +51,20 @@ public class PessoaActivity extends AppCompatActivity {
         // Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         //setSupportActionBar(toolbar);
 
+        pessoaRepository = new PessoaRepository(this);
+
         spnProfissao = (Spinner) findViewById(R.id.spnProfissao);
         edtCpfCnpj = (EditText) findViewById(R.id.edtCpfCnpj);
         rbgCpfCnpj = (RadioGroup) findViewById(R.id.rbgCpfCnpj);
+        rbgSexo = (RadioGroup) findViewById(R.id.rbgSexo);
         rbtCpf = (RadioButton) findViewById(R.id.rbtCpf);
         txtCpfCnpj = (TextView) findViewById(R.id.txtCpfCnpj);
         edtNasc = (EditText) findViewById(R.id.edtNasc);
+        edtNome = (EditText) findViewById(R.id.edtNome);
+        edtEndereco = (EditText) findViewById(R.id.edtEndereco);
 
         cpfMask = Mask.insert("###.###.###-##", edtCpfCnpj);
-        edtCpfCnpj.addTextChangedListener(cpfMask);
+        //edtCpfCnpj.addTextChangedListener(cpfMask);
 
         cnpjMask = Mask.insert("##.###.###/####-##", edtCpfCnpj);
 
@@ -61,15 +74,14 @@ public class PessoaActivity extends AppCompatActivity {
                 edtCpfCnpj.setText("");
                 edtCpfCnpj.requestFocus();
                 cpfCnpjSelecionado = group.getCheckedRadioButtonId();
-                // int opcao = group.getCheckedRadioButtonId();
                 if (cpfCnpjSelecionado == rbtCpf.getId()) {
                     edtCpfCnpj.removeTextChangedListener(cnpjMask);
                     edtCpfCnpj.addTextChangedListener(cpfMask);
-                    txtCpfCnpj.setText("CPF");
+                    txtCpfCnpj.setText("CPF:");
                 } else {
                     edtCpfCnpj.removeTextChangedListener(cpfMask);
                     edtCpfCnpj.addTextChangedListener(cnpjMask);
-                    txtCpfCnpj.setText("CNPJ");
+                    txtCpfCnpj.setText("CNPJ:");
                 }
             }
         });
@@ -161,5 +173,104 @@ public class PessoaActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    public void enviarPessoa(View view) {
+        Pessoa pessoa = montarPessoa();
+
+        if (!validarPessoa(pessoa)) {
+            pessoaRepository.salvarPessoa(pessoa);
+            Intent i = new Intent(this, ListaPessoaActivity.class);
+            startActivity(i);
+            finish();
+
+
+            //Util.showMsgToast(this, "Cadastro Ok!");
+        }
+    }
+
+
+    private boolean validarPessoa(Pessoa pessoa) {
+        boolean erro = false;
+        if (pessoa.getNome() == null || "".equals(pessoa.getNome())) {
+            erro = true;
+            edtNome.setError("Campo Nome obrigatório!");
+        }
+        if (pessoa.getEndereco() == null || "".equals(pessoa.getEndereco())) {
+            erro = true;
+            edtEndereco.setError("Campo Endereço obrigatório!");
+        }
+
+        if (pessoa.getCpfCnpj() == null || "".equals(pessoa.getCpfCnpj())) {
+            erro = true;
+            switch (rbgCpfCnpj.getCheckedRadioButtonId()) {
+                case R.id.rbtCpf:
+                    edtCpfCnpj.setError("Campo CPF obrigatório!");
+                    break;
+                case R.id.rbtCnpj:
+                    edtCpfCnpj.setError("Campo CNPJ obrigatório!");
+                    break;
+            }
+        } else {
+            switch (rbgCpfCnpj.getCheckedRadioButtonId()) {
+                case R.id.rbtCpf:
+                    if (edtCpfCnpj.getText().length() < 14) {
+                        erro = true;
+                        edtCpfCnpj.setError("Campo CPF deve ter 11 caracteres!");
+                    }
+                    break;
+                case R.id.rbtCnpj:
+                    if (edtCpfCnpj.getText().length() < 18) {
+                        erro = true;
+                        edtCpfCnpj.setError("Campo CNPJ deve ter 14 caracteres!");
+                    }
+                    break;
+            }
+
+        }
+        if (pessoa.getDtNasc() == null) {
+            erro = true;
+            edtEndereco.setError("Campo data de Nasc obrigatório!");
+        }
+        return erro;
+    }
+
+
+    private Pessoa montarPessoa() {
+        Pessoa pessoa = new Pessoa();
+        pessoa.setNome(edtNome.getText().toString());
+        pessoa.setEndereco(edtEndereco.getText().toString());
+        pessoa.setCpfCnpj(edtCpfCnpj.getText().toString());
+
+        switch (rbgCpfCnpj.getCheckedRadioButtonId()) {
+            case R.id.rbtCpf:
+                pessoa.setTipoPessoa(TipoPessoa.FISICA);
+                break;
+            case R.id.rbtCnpj:
+                pessoa.setTipoPessoa(TipoPessoa.JURIDICA);
+                break;
+        }
+        switch (rbgSexo.getCheckedRadioButtonId()) {
+            case R.id.rbtMasc:
+                pessoa.setSexo(Sexo.MASCULINO);
+                break;
+            case R.id.rbtFem:
+                pessoa.setSexo(Sexo.FEMININO);
+                break;
+        }
+
+        Profissao profissao = Profissao.getProfissao(spnProfissao.getSelectedItemPosition());
+        pessoa.setProfissao(profissao);
+
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        try {
+            Date nasc = dateFormat.parse(edtNasc.getText().toString());
+            pessoa.setDtNasc(nasc);
+        } catch (java.text.ParseException e) {
+            e.printStackTrace();
+        }
+
+        return pessoa;
+    }
+
 
 }

@@ -18,7 +18,7 @@ public class LoginBO {
         loginRepository = new LoginRepository(activity);
         // loginRepository.popularBD();
 
-        loginRepository.listarLogins(activity);
+      //  loginRepository.listarLogins(activity);
 
     }
 

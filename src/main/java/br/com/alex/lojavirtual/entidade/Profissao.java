@@ -15,12 +15,20 @@ public enum Profissao {
 
     private Profissao(String descricao) {
         this.descrisao = descricao;
-
     }
 
     private String descrisao;
 
     public String getDescrisao() {
         return descrisao;
+    }
+
+    public static Profissao getProfissao(int pos) {
+        for (Profissao p : Profissao.values()) {
+            if (p.ordinal() == pos) {
+                return p;
+            }
+        }
+        return null;
     }
 }

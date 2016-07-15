@@ -8,6 +8,6 @@ public class Constantes {
     public static final String BD_NOME = "loja-devmedia";
 
     // Versão do App
-    public static final int BD_VERSAO = 2;
+    public static final int BD_VERSAO = 1;
 
 }

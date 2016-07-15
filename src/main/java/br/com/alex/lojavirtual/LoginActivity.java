@@ -34,7 +34,7 @@ public class LoginActivity extends AppCompatActivity {
 
         if (usuario != null && senha != null) {
             // Intenção
-            Intent intent = new Intent(LoginActivity.this, PessoaActivity.class);
+            Intent intent = new Intent(LoginActivity.this, DashBoardActivity.class);
             startActivity(intent);
             finish();
         }
@@ -60,7 +60,7 @@ public class LoginActivity extends AppCompatActivity {
 
                 if (isValido) {
                     // Intenção
-                    Intent intent = new Intent(LoginActivity.this, PessoaActivity.class);
+                    Intent intent = new Intent(LoginActivity.this, DashBoardActivity.class);
                     startActivity(intent);
                     finish();
                 }
