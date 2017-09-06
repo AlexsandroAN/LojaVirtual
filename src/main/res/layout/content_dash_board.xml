@@ -23,14 +23,14 @@
         <Button
             android:id="@+id/dashCadastro1"
             style="@style/BtnDash"
-            android:drawableTop="@drawable/user"
+            android:drawableTop="@drawable/add_user"
             android:onClick="callCadastro"
             android:text="Cadastro" />
 
         <Button
             android:id="@+id/dashLista1"
             style="@style/BtnDash"
-            android:drawableTop="@drawable/user_list"
+            android:drawableTop="@drawable/list"
             android:onClick="callList"
             android:text="Listar" />
 
@@ -45,13 +45,13 @@
         <Button
             android:id="@+id/dashCadastro2"
             style="@style/BtnDash"
-            android:drawableTop="@drawable/user"
+            android:drawableTop="@drawable/add_user"
             android:text="Cadastro" />
 
         <Button
             android:id="@+id/dashLista2"
             style="@style/BtnDash"
-            android:drawableTop="@drawable/user_list"
+            android:drawableTop="@drawable/list"
             android:text="Listar" />
 
     </LinearLayout>
@@ -65,13 +65,13 @@
         <Button
             android:id="@+id/dashCadastro"
             style="@style/BtnDash"
-            android:drawableTop="@drawable/user"
+            android:drawableTop="@drawable/add_user"
             android:text="Cadastro" />
 
         <Button
             android:id="@+id/dashLista"
             style="@style/BtnDash"
-            android:drawableTop="@drawable/user_list"
+            android:drawableTop="@drawable/list"
             android:text="Listar" />
 
     </LinearLayout>
