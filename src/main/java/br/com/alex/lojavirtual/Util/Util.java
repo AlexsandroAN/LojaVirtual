@@ -33,9 +33,52 @@ public class Util {
         toast.show();
     }
 
+    public static void showMsgConfirm(final Activity activity, String titulo, String txt, TipoMsg tipoMsg, DialogInterface.OnClickListener listener) {
+        int theme = 0, icone = 0;
+
+        switch (tipoMsg) {
+            case ERROR:
+                theme = R.style.AppTheme_Dark_Dialog_Error;
+                icone = R.drawable.error;
+                break;
+            case INFO:
+                theme = R.style.AppTheme_Dark_Dialog_Info;
+                icone = R.drawable.info;
+                break;
+            case SUCESSO:
+                theme = R.style.AppTheme_Dark_Dialog_Sucesso;
+                icone = R.drawable.ok;
+                break;
+            case ALERTA:
+                theme = R.style.AppTheme_Dark_Dialog_Alerta;
+                icone = R.drawable.alert;
+                break;
+        }
+
+        final AlertDialog alertDialog = new AlertDialog.Builder(activity, theme).create();
+        alertDialog.setTitle(titulo);
+        alertDialog.setMessage(txt);
+        alertDialog.setIcon(icone);
+
+        alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "Ok", listener);
+        alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancelar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                alertDialog.dismiss();
+            }
+        });
+
+        WindowManager.LayoutParams params = new WindowManager.LayoutParams();
+        params.copyFrom(alertDialog.getWindow().getAttributes());
+        params.width = WindowManager.LayoutParams.MATCH_PARENT;
+        params.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        alertDialog.show();
+        alertDialog.getWindow().setAttributes(params);
+    }
+
+
 
     public static void showMsgAlertOK(final Activity activity, String titulo, String txt, TipoMsg tipoMsg) {
-       // AlertDialog alertDialog = null;
         int theme = 0, icone = 0;
 
         switch (tipoMsg) {
@@ -65,7 +108,7 @@ public class Util {
         alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Util.showMsgToast(activity, "Loja Virtual App v1.0");
+                // Util.showMsgToast(activity, "Loja Virtual App v1.0");
                 alertDialog.dismiss();
             }
         });

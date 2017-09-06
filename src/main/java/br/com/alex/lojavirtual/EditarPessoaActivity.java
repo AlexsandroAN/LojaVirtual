@@ -1,14 +1,10 @@
 package br.com.alex.lojavirtual;
 
 import android.app.DatePickerDialog;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.text.TextWatcher;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -34,13 +30,15 @@ import br.com.alex.lojavirtual.entidade.TipoPessoa;
 import br.com.alex.lojavirtual.fragment.DatePickerFragment;
 import br.com.alex.lojavirtual.repository.PessoaRepository;
 
-public class PessoaActivity extends AppCompatActivity {
+public class EditarPessoaActivity extends AppCompatActivity {
+
+    private Pessoa pessoa;
 
     private Spinner spnProfissao;
     private TextView txtCpfCnpj;
     private EditText edtNome, edtEndereco, edtCpfCnpj, edtNasc;
     private RadioGroup rbgCpfCnpj, rbgSexo;
-    private RadioButton rbtCpf;
+    private RadioButton rbtCpf, rbtCnpj, rbtMasc, rbtFem;
     private TextWatcher cpfMask, cnpjMask;
     private int cpfCnpjSelecionado;
 
@@ -49,22 +47,27 @@ public class PessoaActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_pessoa);
+        setContentView(R.layout.activity_editar_pessoa);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        // Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        // setSupportActionBar(toolbar);
 
-        getSupportActionBar().setTitle("Cadastro de Pessoas");
+        getSupportActionBar().setTitle("Editar Pessoa");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
-        pessoaRepository = new PessoaRepository(this);
+        this.pessoaRepository = new PessoaRepository(this);
+
+        pessoa = (Pessoa) getIntent().getExtras().getSerializable("pessoa");
 
         spnProfissao = (Spinner) findViewById(R.id.spnProfissao);
         edtCpfCnpj = (EditText) findViewById(R.id.edtCpfCnpj);
         rbgCpfCnpj = (RadioGroup) findViewById(R.id.rbgCpfCnpj);
         rbgSexo = (RadioGroup) findViewById(R.id.rbgSexo);
         rbtCpf = (RadioButton) findViewById(R.id.rbtCpf);
+        rbtCnpj = (RadioButton) findViewById(R.id.rbtCnpj);
+        rbtMasc = (RadioButton) findViewById(R.id.rbtMasc);
+        rbtFem = (RadioButton) findViewById(R.id.rbtFem);
         txtCpfCnpj = (TextView) findViewById(R.id.txtCpfCnpj);
         edtNasc = (EditText) findViewById(R.id.edtNasc);
         edtNome = (EditText) findViewById(R.id.edtNome);
@@ -105,8 +108,8 @@ public class PessoaActivity extends AppCompatActivity {
                 }
             }
         });
-
         this.initProfissoes();
+        this.initCampos();
     }
 
     public void setData(View view) {
@@ -125,60 +128,52 @@ public class PessoaActivity extends AppCompatActivity {
         datePickerFragment.show(getFragmentManager(), "Data NAsc.");
     }
 
-    private DatePickerDialog.OnDateSetListener datelistener = new DatePickerDialog.OnDateSetListener() {
-        @Override
-        public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-            edtNasc.setText(dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
+    private void initCampos() {
+        edtNome.setText(pessoa.getNome());
+        edtEndereco.setText(pessoa.getEndereco());
+        edtCpfCnpj.setText(pessoa.getCpfCnpj());
+        switch (pessoa.getTipoPessoa()) {
+            case FISICA:
+                txtCpfCnpj.setText("CPF:");
+                rbtCpf.setChecked(true);
+                edtCpfCnpj.setText(pessoa.getCpfCnpj());
+                break;
+            case JURIDICA:
+                txtCpfCnpj.setText("CNPJ:");
+                rbtCnpj.setChecked(true);
+                edtCpfCnpj.setText(pessoa.getCpfCnpj());
+                break;
         }
-    };
+        switch (pessoa.getSexo()) {
+            case MASCULINO:
+                rbtMasc.setChecked(true);
+                break;
+            case FEMININO:
+                rbtFem.setChecked(true);
+                break;
+        }
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        spnProfissao.setSelection(pessoa.getProfissao().ordinal());
+        edtNasc.setText(dateFormat.format(pessoa.getDtNasc()));
+    }
 
     private void initProfissoes() {
         ArrayList<String> prodissoes = new ArrayList<>();
         for (Profissao profissao : Profissao.values()) {
             prodissoes.add(profissao.getDescrisao());
         }
-        ArrayAdapter adapter = new ArrayAdapter(PessoaActivity.this, android.R.layout.simple_spinner_item, prodissoes);
+        ArrayAdapter adapter = new ArrayAdapter(EditarPessoaActivity.this, android.R.layout.simple_spinner_item, prodissoes);
         adapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
         spnProfissao.setAdapter(adapter);
 
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.menu_sair:
-                SharedPreferences.Editor editor = getSharedPreferences("pref", Context.MODE_PRIVATE).edit();
-                editor.remove("usuario");
-                editor.remove("senha");
-                editor.commit();
-
-                finish();
-                Intent intent = new Intent(PessoaActivity.this, LoginActivity.class);
-                startActivity(intent);
-                break;
+    private DatePickerDialog.OnDateSetListener datelistener = new DatePickerDialog.OnDateSetListener() {
+        @Override
+        public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+            edtNasc.setText(dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
         }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    public void enviarPessoa(View view) {
-        Pessoa pessoa = montarPessoa();
-
-        if (!validarPessoa(pessoa)) {
-            pessoaRepository.salvarPessoa(pessoa);
-            Intent i = new Intent(this, ListaPessoaActivity.class);
-            startActivity(i);
-            finish();
-            Util.showMsgToast(this, "Pessoa salva com sucesso!");
-        }
-    }
+    };
 
 
     private boolean validarPessoa(Pessoa pessoa) {
@@ -229,6 +224,9 @@ public class PessoaActivity extends AppCompatActivity {
 
     private Pessoa montarPessoa() {
         Pessoa pessoa = new Pessoa();
+
+        pessoa.setId(this.pessoa.getId());
+
         pessoa.setNome(edtNome.getText().toString());
         pessoa.setEndereco(edtEndereco.getText().toString());
         pessoa.setCpfCnpj(edtCpfCnpj.getText().toString());
@@ -263,4 +261,28 @@ public class PessoaActivity extends AppCompatActivity {
 
         return pessoa;
     }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                break;
+        }
+        return true;
+    }
+
+
+    public void atualizarPessoa(View view) {
+        Pessoa pessoa = montarPessoa();
+        if (!validarPessoa(pessoa)) {
+            pessoaRepository.atualizarPessoa(pessoa);
+            Intent i = new Intent(this, ListaPessoaActivity.class);
+            startActivity(i);
+            finish();
+            Util.showMsgToast(this, "Atualização da Pessoa efetuada com sucesso!");
+        }
+    }
+
 }

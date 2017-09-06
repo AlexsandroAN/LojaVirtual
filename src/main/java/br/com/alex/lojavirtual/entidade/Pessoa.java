@@ -1,11 +1,12 @@
 package br.com.alex.lojavirtual.entidade;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * Created by 39091 on 11/07/2016.
  */
-public class Pessoa {
+public class Pessoa implements Serializable {
 
     private int id;
 
